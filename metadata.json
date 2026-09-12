@@ -1,0 +1,6 @@
+{
+  "name": "RAXXER",
+  "description": "RAXXER — Secretário Pessoal Inteligente. Organização de rotina, tarefas e compromissos por conversa natural.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
