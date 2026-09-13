@@ -40,6 +40,8 @@ import {
 import { useCommercialData } from '../hooks/useCommercialData';
 import { useCurrentDateTime } from '../hooks/useCurrentDateTime';
 import { COMMERCIAL_STAGES, CommercialLeadStatus } from '../types/commercial';
+import heroMountainArt from '../assets/person-mountain.jpg';
+import aiHumanoidArt from '../assets/ai-cyborg-face.jpg';
 
 interface CommercialBIDashboardProps {
   userName?: string;
@@ -541,23 +543,48 @@ export const CommercialBIDashboard: React.FC<CommercialBIDashboardProps> = ({
       </div>
 
       {/* ========================================================================= */}
-      {/* 2. WELCOME BANNER COM ATMOSFERA CYBERNETIC E CITAÇÃO                      */}
+      {/* 2. WELCOME BANNER COM ARTE CINEMATOGRÁFICA (MONTANHAS & PESSOA NO TOPO)   */}
       {/* ========================================================================= */}
-      <div className="relative rounded-2xl overflow-hidden border border-blue-900/40 bg-gradient-to-r from-[#091530] via-[#0D1C44] to-[#112356] p-6 shadow-xl">
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="space-y-1 max-w-xl">
-            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-white">
+      <div className="relative rounded-2xl overflow-hidden border border-blue-900/50 bg-[#070E24] shadow-2xl min-h-[170px] md:min-h-[190px] flex items-center">
+        {/* Arte Decorativa Superior: Montanhas ao fundo, céu escuro azulado e pessoa no topo */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <img
+            src={heroMountainArt}
+            alt="Conquista no topo da montanha"
+            className="w-full h-full object-cover object-[70%_30%] md:object-[right_center] scale-105 transition-transform duration-700"
+            referrerPolicy="no-referrer"
+          />
+          {/* Máscara 1: Gradiente escuro da esquerda para garantir contraste e leitura impecável do texto */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#070C1A] via-[#070C1A]/90 via-50% to-transparent" />
+          
+          {/* Máscara 2: Gradientes suaves nas bordas superior e inferior para integrar a imagem ao fundo do sistema */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#070C1A] via-transparent to-[#070C1A]/60" />
+          
+          {/* Máscara 3: Iluminação azul cybernetic e discreto brilho no horizonte */}
+          <div className="absolute inset-0 bg-blue-950/25 mix-blend-color" />
+          <div className="absolute right-12 bottom-0 w-80 h-80 bg-cyan-500/15 rounded-full blur-3xl pointer-events-none" />
+        </div>
+
+        {/* Conteúdo da Saudação */}
+        <div className="relative z-10 w-full p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="space-y-1.5 max-w-xl">
+            <div className="flex items-center gap-2">
+              <span className="px-2.5 py-0.5 rounded-md text-[10px] font-mono tracking-wider font-semibold uppercase bg-blue-950/80 text-cyan-300 border border-blue-600/40 backdrop-blur-md">
+                RAXXER INTEL • PAINEL EXECUTIVO
+              </span>
+            </div>
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-black tracking-tight text-white drop-shadow-md">
               {greeting}, <span className="text-[#38BDF8]">{userName}!</span>
             </h1>
-            <p className="text-xs md:text-sm text-slate-300 font-light">
-              Acompanhamento de leads, análises de crédito, aprovações, vendas e VGV.
+            <p className="text-xs md:text-sm text-slate-300 font-light max-w-lg leading-relaxed drop-shadow">
+              Acompanhamento de leads, análises de crédito, aprovações, vendas e VGV consolidado.
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <button
               onClick={() => onNavigate('leads')}
-              className="px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white text-xs font-semibold flex items-center gap-2 shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all cursor-pointer"
+              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white text-xs font-semibold flex items-center gap-2 shadow-[0_0_25px_rgba(6,182,212,0.4)] transition-all cursor-pointer backdrop-blur-sm"
             >
               <span>Acessar Leads</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -1460,31 +1487,55 @@ export const CommercialBIDashboard: React.FC<CommercialBIDashboardProps> = ({
           </div>
         </div>
 
-        {/* COLUNA 3: CARD MOTIVACIONAL CYBERNETIC (4 COLUNAS) */}
-        <div className="lg:col-span-4 p-5 rounded-2xl bg-gradient-to-br from-[#07132B] via-[#091B3E] to-[#0E285C] border border-blue-600/40 shadow-[0_0_30px_rgba(37,99,235,0.2)] flex flex-col justify-between relative overflow-hidden">
-          <div className="space-y-3 relative z-10">
-            <div className="space-y-1 font-mono font-black text-sm tracking-wider">
-              <div className="text-[#38BDF8]">CADASTRE</div>
-              <div className="text-[#60A5FA]">ANALISE</div>
-              <div className="text-[#818CF8]">APROVE</div>
+        {/* COLUNA 3: CARD INSTITUCIONAL / BRANDING COM ARTE IA HUMANOIDE (4 COLUNAS) */}
+        <div className="lg:col-span-4 rounded-2xl border border-blue-500/40 shadow-[0_0_30px_rgba(37,99,235,0.25)] relative overflow-hidden bg-[#060E24] flex flex-col justify-between min-h-[260px]">
+          {/* Arte da Inteligência Artificial Humanoide posicionada com fade suave */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <img
+              src={aiHumanoidArt}
+              alt="Inteligência Artificial RAXXER"
+              className="w-full h-full object-cover object-[80%_center] md:object-right opacity-45 mix-blend-screen scale-105 transition-transform duration-700"
+              referrerPolicy="no-referrer"
+            />
+            {/* Gradiente escuro para garantir legibilidade perfeita do texto institucional */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[#060E24] via-[#060E24]/90 via-55% to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#060E24] via-transparent to-[#060E24]/30" />
+            {/* Brilho e atmosfera neon */}
+            <div className="absolute -top-10 -right-10 w-48 h-48 bg-cyan-500/20 rounded-full blur-2xl" />
+          </div>
+
+          <div className="p-6 relative z-10 space-y-3.5">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+              <span className="text-[10px] font-mono tracking-widest text-cyan-300 font-semibold uppercase">
+                RAXXER CORE
+              </span>
+            </div>
+
+            {/* Texto Institucional Solicitado: PLANEJE, EXECUTE, EVOLUA, CONQUISTE */}
+            <div className="space-y-1 font-mono font-black text-lg md:text-xl tracking-wider leading-none">
+              <div className="text-[#38BDF8]">PLANEJE</div>
+              <div className="text-[#60A5FA]">EXECUTE</div>
+              <div className="text-[#818CF8]">EVOLUA</div>
               <div className="text-white">CONQUISTE</div>
             </div>
 
-            <div className="w-12 h-0.5 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full" />
+            <div className="w-14 h-0.5 bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 rounded-full" />
 
-            <p className="text-xs text-blue-200 font-light leading-relaxed">
-              O controle comercial eficiente transforma leads em vendas e VGV consolidado.
+            {/* Subtítulo institucional */}
+            <p className="text-xs text-blue-100/90 font-light leading-relaxed max-w-[220px]">
+              Um futuro melhor começa com as ações de hoje.
             </p>
           </div>
 
-          <div className="pt-4 flex items-center justify-between relative z-10">
-            <span className="text-[10px] text-slate-500 font-mono">RAXXER BI COMERCIAL</span>
+          <div className="p-6 pt-0 flex items-center justify-between relative z-10">
+            <span className="text-[10px] text-slate-400 font-mono tracking-wider">RAXXER BI COMERCIAL</span>
             <button
               onClick={() => onNavigate('leads')}
-              className="inline-flex items-center gap-1 text-[11px] text-cyan-300 font-semibold cursor-pointer hover:underline"
+              className="inline-flex items-center gap-1 text-[11px] text-cyan-300 font-semibold cursor-pointer hover:text-cyan-200 hover:underline transition-colors"
             >
               <span>Gerenciar Leads</span>
-              <ChevronRight className="w-3 h-3" />
+              <ChevronRight className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>

@@ -14,6 +14,7 @@ import {
 import { GoalItem, MemoryItem, ProjectItem, TaskItem, UserProfile } from '../types';
 import { Panel, SectionHeader, MetricCard, StatusBadge, Button } from './common/DesignSystem';
 import { useCurrentDateTime } from '../hooks/useCurrentDateTime';
+import heroMountainArt from '../assets/person-mountain.jpg';
 
 interface DashboardViewProps {
   profile: UserProfile;
@@ -79,15 +80,27 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
   return (
     <div className="max-w-4xl mx-auto space-y-6 pb-16 pt-2 font-sans text-slate-100">
-      {/* 1. HERO BANNER: SECRETÁRIO PESSOAL */}
-      <div className="relative rounded-2xl overflow-hidden border border-blue-900/40 bg-gradient-to-r from-[#091530] via-[#0D1C44] to-[#112356] p-6 md:p-8 shadow-xl">
-        {/* Glow ambient background */}
-        <div className="absolute right-0 top-0 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+      {/* 1. HERO BANNER: SECRETÁRIO PESSOAL COM ARTE PANORÂMICA */}
+      <div className="relative rounded-2xl overflow-hidden border border-blue-900/50 bg-[#070E24] p-6 md:p-8 shadow-2xl">
+        {/* Arte Decorativa Superior: Montanhas ao fundo e pessoa no topo */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <img
+            src={heroMountainArt}
+            alt="Montanhas e conquista"
+            className="w-full h-full object-cover object-[75%_30%] md:object-[right_center] scale-105"
+            referrerPolicy="no-referrer"
+          />
+          {/* Máscaras e gradientes de integração com o fundo */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#070C1A] via-[#070C1A]/90 via-55% to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#070C1A] via-transparent to-[#070C1A]/60" />
+          <div className="absolute inset-0 bg-blue-950/25 mix-blend-color" />
+          <div className="absolute right-0 top-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
+        </div>
 
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-1.5">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold text-cyan-300 bg-blue-950/80 border border-blue-800/60 px-2.5 py-0.5 rounded-lg inline-flex items-center gap-1.5">
+              <span className="text-xs font-semibold text-cyan-300 bg-blue-950/80 border border-blue-800/60 px-2.5 py-0.5 rounded-lg inline-flex items-center gap-1.5 backdrop-blur-sm">
                 <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
                 Secretário Pessoal Inteligente
               </span>
@@ -95,10 +108,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 {fullDate}
               </span>
             </div>
-            <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight">
+            <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight drop-shadow-md">
               {greeting}, <span className="text-[#38BDF8]">{nameToUse}!</span>
             </h1>
-            <p className="text-xs md:text-sm text-slate-300 leading-relaxed max-w-xl font-light">
+            <p className="text-xs md:text-sm text-slate-200 leading-relaxed max-w-xl font-light drop-shadow">
               Aqui está sua agenda do dia. Converse com o RAXXER para organizar tarefas, compromissos e anotações instantâneas.
             </p>
           </div>
@@ -109,7 +122,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               size="lg"
               icon={Sparkles}
               onClick={() => onOpenAIChat()}
-              className="w-full md:w-auto"
+              className="w-full md:w-auto shadow-[0_0_25px_rgba(6,182,212,0.4)]"
             >
               Conversar com RAXXER
             </Button>
