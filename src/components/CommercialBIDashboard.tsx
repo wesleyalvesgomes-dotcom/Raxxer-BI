@@ -49,7 +49,21 @@ export const CommercialBIDashboard: React.FC<CommercialBIDashboardProps> = ({
 }) => {
   const { leads, visits, proposals, sales, goals } = useCommercialData();
   const [periodFilter, setPeriodFilter] = useState<'mes' | 'trimestre' | 'ano'>('mes');
+  const [isPeriodDropdownOpen, setIsPeriodDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+
+  const matchedLeads = useMemo(() => {
+    if (!searchQuery.trim()) return [];
+    const q = searchQuery.toLowerCase();
+    return leads
+      .filter(
+        (l) =>
+          l.nome.toLowerCase().includes(q) ||
+          (l.telefone && l.telefone.includes(q)) ||
+          (l.empreendimentoInteresse && l.empreendimentoInteresse.toLowerCase().includes(q))
+      )
+      .slice(0, 5);
+  }, [leads, searchQuery]);
 
   // 1. DADOS E INDICADORES REAIS
   const metrics = useMemo(() => {
@@ -403,15 +417,87 @@ export const CommercialBIDashboard: React.FC<CommercialBIDashboardProps> = ({
           <div className="absolute right-2.5 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded bg-blue-950/80 border border-blue-800/40 text-[10px] text-slate-400 font-mono">
             ⌘ K
           </div>
+
+          {/* Quick Search Results Dropdown */}
+          {searchQuery.trim() !== '' && (
+            <div className="absolute left-0 right-0 top-full mt-2 bg-[#0B132B] border border-blue-900/60 rounded-xl shadow-2xl p-2 z-50 space-y-1">
+              {matchedLeads.length > 0 ? (
+                <>
+                  <div className="px-2 py-1 text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
+                    Leads Encontrados ({matchedLeads.length})
+                  </div>
+                  {matchedLeads.map((l) => (
+                    <button
+                      key={l.id}
+                      onClick={() => {
+                        setSearchQuery('');
+                        onNavigate('leads');
+                      }}
+                      className="w-full text-left flex items-center justify-between p-2 rounded-lg hover:bg-blue-950/60 transition-colors text-xs text-slate-200 cursor-pointer"
+                    >
+                      <div>
+                        <div className="font-semibold text-white">{l.nome}</div>
+                        <div className="text-[10px] text-slate-400">{l.telefone || l.email || 'Sem contato'} • {l.empreendimentoInteresse || 'Geral'}</div>
+                      </div>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-900/50 text-cyan-300 capitalize">
+                        {l.etapa.replace('_', ' ')}
+                      </span>
+                    </button>
+                  ))}
+                  <button
+                    onClick={() => {
+                      setSearchQuery('');
+                      onNavigate('leads');
+                    }}
+                    className="w-full text-center py-1.5 text-xs text-cyan-400 hover:text-cyan-300 font-medium border-t border-blue-900/40 mt-1 cursor-pointer"
+                  >
+                    Ver todos no módulo Leads →
+                  </button>
+                </>
+              ) : (
+                <div className="p-3 text-center text-xs text-slate-400">
+                  Nenhum resultado encontrado para &quot;{searchQuery}&quot;
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Right tools: Seletor de Período, Sinos, Data e Relógio 08:24 */}
         <div className="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end">
           {/* Seletor "Este mês" */}
-          <div className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#0B132B] border border-blue-900/40 text-xs text-slate-200">
-            <CalendarDays className="w-3.5 h-3.5 text-blue-400" />
-            <span className="font-medium">Este mês</span>
-            <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+          <div className="relative">
+            <button
+              onClick={() => setIsPeriodDropdownOpen(!isPeriodDropdownOpen)}
+              className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#0B132B] border border-blue-900/40 hover:border-blue-700/60 text-xs text-slate-200 cursor-pointer transition-colors"
+            >
+              <CalendarDays className="w-3.5 h-3.5 text-blue-400" />
+              <span className="font-medium">
+                {periodFilter === 'mes' ? 'Este mês' : periodFilter === 'trimestre' ? 'Este trimestre' : 'Este ano'}
+              </span>
+              <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+            </button>
+
+            {isPeriodDropdownOpen && (
+              <div className="absolute right-0 top-full mt-2 w-40 bg-[#0B132B] border border-blue-900/60 rounded-xl shadow-2xl p-1 z-50">
+                {(['mes', 'trimestre', 'ano'] as const).map((period) => (
+                  <button
+                    key={period}
+                    onClick={() => {
+                      setPeriodFilter(period);
+                      setIsPeriodDropdownOpen(false);
+                    }}
+                    className={`w-full text-left px-3 py-1.5 rounded-lg text-xs transition-colors cursor-pointer ${
+                      periodFilter === period
+                        ? 'bg-blue-600 text-white font-semibold'
+                        : 'text-slate-300 hover:bg-blue-950/60'
+                    }`}
+                  >
+                    {period === 'mes' ? 'Este mês' : period === 'trimestre' ? 'Este trimestre' : 'Este ano'}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Sinos de Notificação */}

@@ -98,6 +98,15 @@ export const AIChatDrawer: React.FC<AIChatDrawerProps> = ({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: text.trim(),
+          profile,
+          memories,
+          goals,
+          tasks,
+          dailyHistory,
+          chatHistory: messages.slice(-6).map((m) => ({
+            role: m.sender === 'user' ? 'user' : 'assistant',
+            text: m.text,
+          })),
           context: {
             profile,
             memories,

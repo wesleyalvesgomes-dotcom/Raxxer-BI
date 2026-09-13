@@ -58,7 +58,21 @@ export default {
 
         // 1. Chat Principal do Secretário RAXXER
         if (url.pathname === '/api/ai/chat') {
-          const { message, profile, memories, goals, tasks, dailyHistory, chatHistory } = body;
+          const message = body.message;
+          const context = body.context || {};
+          const profile = body.profile || context.profile;
+          const memories = body.memories || context.memories;
+          const goals = body.goals || context.goals;
+          let tasks = body.tasks || context.tasks;
+          if (!tasks && body.systemContext) {
+            try {
+              const parsed = JSON.parse(body.systemContext);
+              tasks = parsed.tasks;
+            } catch {}
+          }
+          const dailyHistory = body.dailyHistory || context.dailyHistory;
+          const chatHistory = body.chatHistory || context.chatHistory;
+
           if (!message || typeof message !== 'string') {
             return jsonResponse({ error: 'O campo "message" é obrigatório.' }, 400);
           }

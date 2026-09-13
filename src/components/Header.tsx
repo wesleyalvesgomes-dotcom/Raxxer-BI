@@ -36,7 +36,8 @@ export const Header: React.FC<HeaderProps> = ({
   memoriesCount,
   leadsCount = 0,
 }) => {
-  const { fullDate: formattedDate } = useCurrentDateTime(userName);
+  const safeUserName = (userName && userName.trim()) || 'Wesley';
+  const { fullDate: formattedDate } = useCurrentDateTime(safeUserName);
 
   return (
     <header className="sticky top-0 z-40 px-4 lg:px-8 py-3 bg-[#050914]/95 backdrop-blur-md border-b border-blue-900/40 text-slate-100 shadow-[0_4px_25px_rgba(0,0,0,0.6)]">

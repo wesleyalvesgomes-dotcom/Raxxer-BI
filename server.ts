@@ -23,6 +23,11 @@ const PORT = 3000;
 
 app.use(express.json());
 
+// API Health Check
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', runtime: 'express' });
+});
+
 // Initialize Gemini AI SDK lazily/safely on server-side
 function getGeminiClient() {
   const apiKey = process.env.GEMINI_API_KEY;
@@ -149,7 +154,22 @@ app.post('/api/ai/weekly-review', async (req, res) => {
 // API: General AI Chat Advisor
 app.post('/api/ai/chat', async (req, res) => {
   try {
-    const { message, profile, memories, goals, tasks, dailyHistory, chatHistory } = req.body;
+    const body = req.body || {};
+    const message = body.message;
+    const context = body.context || {};
+    const profile = body.profile || context.profile;
+    const memories = body.memories || context.memories;
+    const goals = body.goals || context.goals;
+    let tasks = body.tasks || context.tasks;
+    if (!tasks && body.systemContext) {
+      try {
+        const parsed = JSON.parse(body.systemContext);
+        tasks = parsed.tasks;
+      } catch {}
+    }
+    const dailyHistory = body.dailyHistory || context.dailyHistory;
+    const chatHistory = body.chatHistory || context.chatHistory;
+
     const ai = getGeminiClient();
 
     const contextPrompt = buildChatPrompt({
