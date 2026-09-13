@@ -25,6 +25,7 @@ import {
   PieChart as PieIcon,
   BarChart3,
   CalendarRange,
+  Filter,
 } from 'lucide-react';
 import {
   ResponsiveContainer,
@@ -648,6 +649,42 @@ export const CommercialBIDashboard: React.FC<CommercialBIDashboardProps> = ({
           <CalendarDays className="w-3.5 h-3.5" />
           <span>Balanço Mensal</span>
         </button>
+
+        {/* Divisor estético sutil */}
+        <div className="h-5 w-[1px] bg-blue-900/60 mx-1 shrink-0" />
+
+        {/* Atalhos Rápidos para Funil de Vendas e Vendas */}
+        <button
+          id="tab-shortcut-funil-vendas"
+          onClick={() => onNavigate('funil_vendas')}
+          className="px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 text-cyan-300 hover:text-white bg-blue-950/50 hover:bg-blue-900/60 border border-blue-800/40 hover:border-cyan-500/50 transition-all cursor-pointer whitespace-nowrap shadow-sm"
+          title="Abrir Funil de Vendas Comercial"
+        >
+          <Filter className="w-3.5 h-3.5 text-cyan-400" />
+          <span>Funil de Vendas</span>
+          <ArrowRight className="w-3 h-3 text-cyan-400/80" />
+        </button>
+
+        <button
+          id="tab-shortcut-vendas"
+          onClick={() => onNavigate('vendas')}
+          className="px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 text-emerald-300 hover:text-white bg-emerald-950/30 hover:bg-emerald-900/40 border border-emerald-800/40 hover:border-emerald-500/50 transition-all cursor-pointer whitespace-nowrap shadow-sm"
+          title="Abrir Gestão e Extrato de Vendas"
+        >
+          <DollarSign className="w-3.5 h-3.5 text-emerald-400" />
+          <span>Vendas Realizadas</span>
+          <ArrowRight className="w-3 h-3 text-emerald-400/80" />
+        </button>
+
+        <button
+          id="tab-shortcut-leads"
+          onClick={() => onNavigate('leads')}
+          className="px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 text-slate-300 hover:text-white bg-slate-900/60 hover:bg-slate-800/60 border border-slate-800/50 transition-all cursor-pointer whitespace-nowrap"
+          title="Abrir Base de Leads"
+        >
+          <Users className="w-3.5 h-3.5 text-slate-400" />
+          <span>Leads ({metrics.totalLeads})</span>
+        </button>
       </div>
 
       {/* ========================================================================= */}
@@ -655,7 +692,11 @@ export const CommercialBIDashboard: React.FC<CommercialBIDashboardProps> = ({
       {/* ========================================================================= */}
       <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
         {/* Card 1: Total Leads */}
-        <div className="p-3.5 rounded-2xl bg-[#091329] border border-blue-900/40 flex flex-col justify-between space-y-2 shadow-sm">
+        <div
+          onClick={() => onNavigate('leads')}
+          className="p-3.5 rounded-2xl bg-[#091329] border border-blue-900/40 hover:border-blue-500/60 flex flex-col justify-between space-y-2 shadow-sm cursor-pointer transition-all hover:scale-[1.02]"
+          title="Ver todos os leads"
+        >
           <div className="w-8 h-8 rounded-lg bg-[#132A54] border border-blue-500/30 flex items-center justify-center text-blue-400">
             <Users className="w-4 h-4" />
           </div>
@@ -721,7 +762,11 @@ export const CommercialBIDashboard: React.FC<CommercialBIDashboardProps> = ({
         </div>
 
         {/* Card 7: Vendidos */}
-        <div className="p-3.5 rounded-2xl bg-[#091329] border border-blue-900/40 flex flex-col justify-between space-y-2 shadow-sm">
+        <div
+          onClick={() => onNavigate('vendas')}
+          className="p-3.5 rounded-2xl bg-[#091329] border border-blue-900/40 hover:border-cyan-500/60 flex flex-col justify-between space-y-2 shadow-sm cursor-pointer transition-all hover:scale-[1.02]"
+          title="Ver detalhes das Vendas"
+        >
           <div className="w-8 h-8 rounded-lg bg-cyan-950 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
             <TrendingUp className="w-4 h-4" />
           </div>
@@ -732,7 +777,11 @@ export const CommercialBIDashboard: React.FC<CommercialBIDashboardProps> = ({
         </div>
 
         {/* Card 8: VGV (HIGHLIGHT CARD EM VERDE ESMERALDA COM BRILHO) */}
-        <div className="p-3.5 rounded-2xl bg-gradient-to-br from-[#062424] via-[#07302F] to-[#0A3D3C] border border-emerald-500/50 flex flex-col justify-between space-y-2 shadow-[0_0_20px_rgba(16,185,129,0.2)]">
+        <div
+          onClick={() => onNavigate('vendas')}
+          className="p-3.5 rounded-2xl bg-gradient-to-br from-[#062424] via-[#07302F] to-[#0A3D3C] border border-emerald-500/50 hover:border-emerald-400 flex flex-col justify-between space-y-2 shadow-[0_0_20px_rgba(16,185,129,0.2)] cursor-pointer transition-all hover:scale-[1.02]"
+          title="Ver extrato completo de Vendas e VGV"
+        >
           <div className="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-400/50 flex items-center justify-center text-emerald-300">
             <DollarSign className="w-4 h-4" />
           </div>
@@ -1032,29 +1081,46 @@ export const CommercialBIDashboard: React.FC<CommercialBIDashboardProps> = ({
         {/* COLUNA 1: FUNIL DE VENDAS (4 COLUNAS) */}
         <div className="lg:col-span-4 p-5 rounded-2xl bg-[#091329] border border-blue-900/40 shadow-lg flex flex-col justify-between space-y-4">
           <div className="flex items-center justify-between pb-2 border-b border-blue-900/30">
-            <div className="flex items-center gap-2">
-              <SlidersHorizontal className="w-4 h-4 text-cyan-400" />
-              <h3 className="text-sm font-bold text-white tracking-tight">Funil Comercial</h3>
+            <div
+              onClick={() => onNavigate('funil_vendas')}
+              className="flex items-center gap-2 cursor-pointer group"
+              title="Abrir Funil de Vendas completo"
+            >
+              <SlidersHorizontal className="w-4 h-4 text-cyan-400 group-hover:text-cyan-300 transition-colors" />
+              <h3 className="text-sm font-bold text-white tracking-tight group-hover:text-cyan-300 transition-colors">
+                Funil Comercial
+              </h3>
             </div>
-            <span className="text-[11px] text-slate-400">Fluxo Oficial</span>
+            <button
+              onClick={() => onNavigate('funil_vendas')}
+              className="text-[11px] font-semibold text-cyan-400 hover:text-cyan-300 flex items-center gap-1 cursor-pointer transition-colors"
+            >
+              <span>Ver Completo</span>
+              <ArrowRight className="w-3 h-3" />
+            </button>
           </div>
 
           {/* Cone 3D escalonado alinhado com as barras horizontais */}
           <div className="space-y-3 py-1">
             {funnelStages.map((stage) => (
-              <div key={stage.id} className="flex items-center gap-3">
+              <div
+                key={stage.id}
+                onClick={() => onNavigate('funil_vendas')}
+                className="flex items-center gap-3 cursor-pointer group hover:bg-blue-950/30 p-1 rounded-lg transition-colors"
+                title={`Ver detalhes de ${stage.name} no Funil`}
+              >
                 {/* Visual funil escalonado com o número dentro */}
                 <div className="w-16 shrink-0 flex items-center justify-center">
                   <div
                     style={{ width: `${stage.widthPercent}%` }}
-                    className={`h-6 rounded-md bg-gradient-to-r ${stage.colorClass} text-white font-mono text-[11px] font-bold flex items-center justify-center shadow-md transition-all`}
+                    className={`h-6 rounded-md bg-gradient-to-r ${stage.colorClass} text-white font-mono text-[11px] font-bold flex items-center justify-center shadow-md transition-all group-hover:scale-105`}
                   >
                     {stage.count}
                   </div>
                 </div>
 
                 {/* Nome da etapa */}
-                <div className="w-24 text-[11px] font-medium text-slate-300 truncate">
+                <div className="w-24 text-[11px] font-medium text-slate-300 group-hover:text-white transition-colors truncate">
                   {stage.name}
                 </div>
 
@@ -1066,7 +1132,7 @@ export const CommercialBIDashboard: React.FC<CommercialBIDashboardProps> = ({
                       style={{ width: `${Math.max(4, stage.pct)}%` }}
                     />
                   </div>
-                  <span className="w-9 text-right text-[11px] font-mono font-bold text-slate-300">
+                  <span className="w-9 text-right text-[11px] font-mono font-bold text-slate-300 group-hover:text-cyan-300 transition-colors">
                     {stage.pct}%
                   </span>
                 </div>
@@ -1083,11 +1149,23 @@ export const CommercialBIDashboard: React.FC<CommercialBIDashboardProps> = ({
         {/* COLUNA 2: EVOLUÇÃO DE VENDAS COM GRÁFICO NEON (5 COLUNAS) */}
         <div className="lg:col-span-5 p-5 rounded-2xl bg-[#091329] border border-blue-900/40 shadow-lg flex flex-col justify-between space-y-4">
           <div className="flex items-center justify-between pb-2 border-b border-blue-900/30">
-            <div className="flex items-center gap-2">
-              <TrendingUp className="w-4 h-4 text-cyan-400" />
-              <h3 className="text-sm font-bold text-white tracking-tight">Evolução de Vendas</h3>
+            <div
+              onClick={() => onNavigate('vendas')}
+              className="flex items-center gap-2 cursor-pointer group"
+              title="Abrir extrato de Vendas"
+            >
+              <TrendingUp className="w-4 h-4 text-cyan-400 group-hover:text-cyan-300 transition-colors" />
+              <h3 className="text-sm font-bold text-white tracking-tight group-hover:text-cyan-300 transition-colors">
+                Evolução de Vendas
+              </h3>
             </div>
-            <span className="text-[11px] text-slate-400">Últimos 6 meses</span>
+            <button
+              onClick={() => onNavigate('vendas')}
+              className="text-[11px] font-semibold text-cyan-400 hover:text-cyan-300 flex items-center gap-1 cursor-pointer transition-colors"
+            >
+              <span>Ver Vendas</span>
+              <ArrowRight className="w-3 h-3" />
+            </button>
           </div>
 
           {/* Gráfico de Linha Neon */}

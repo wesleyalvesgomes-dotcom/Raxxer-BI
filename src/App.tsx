@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Menu, Bot } from 'lucide-react';
 import { Header } from './components/Header';
 import { DashboardView } from './components/DashboardView';
 import { MyDayView } from './components/MyDayView';
@@ -81,6 +82,28 @@ const getSanitizedLocalStorage = <T,>(key: string, fallback: T): T => {
   } catch (e) {
     return fallback;
   }
+};
+
+// Detecta a rota ativa inicial a partir da URL (path ou hash)
+const getTabFromURL = (): string => {
+  if (typeof window === 'undefined') return 'bi_comercial';
+  const rawPath = window.location.pathname.replace(/^\/+|\/+$/g, '').toLowerCase();
+  const rawHash = window.location.hash.replace(/^#\/?/, '').toLowerCase();
+  const target = rawPath || rawHash;
+
+  if (target === 'funil' || target === 'funil_vendas' || target === 'funil-vendas') return 'funil_vendas';
+  if (target === 'vendas' || target === 'venda') return 'vendas';
+  if (target === 'leads' || target === 'lead') return 'leads';
+  if (target === 'bi' || target === 'bi_comercial' || target === 'comercial') return 'bi_comercial';
+  if (target === 'dashboard' || target === 'painel') return 'dashboard';
+  if (target === 'meu_dia' || target === 'meudia') return 'meu_dia';
+  if (target === 'metas' || target === 'projetos') return 'metas';
+  if (target === 'memoria' || target === 'cerebro') return 'memoria';
+  if (target === 'revisao') return 'revisao';
+  if (target === 'evolucao') return 'evolucao';
+  if (target === 'entrevista') return 'entrevista';
+
+  return 'bi_comercial';
 };
 
 export default function App() {
@@ -166,10 +189,39 @@ export default function App() {
   }, []);
 
   // UI Navigation & Modals State
-  const [activeTab, setActiveTab] = useState<string>('bi_comercial');
+  const [activeTab, setActiveTab] = useState<string>(() => getTabFromURL());
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState<boolean>(false);
   const [isAIChatOpen, setIsAIChatOpen] = useState<boolean>(false);
   const [aiInitialPrompt, setAiInitialPrompt] = useState<string | undefined>(undefined);
   const [isQuickMemoryOpen, setIsQuickMemoryOpen] = useState<boolean>(false);
+
+  // Sincroniza abas com URL e histórico do navegador
+  useEffect(() => {
+    const handleUrlChange = () => {
+      const detected = getTabFromURL();
+      setActiveTab(detected);
+    };
+
+    window.addEventListener('popstate', handleUrlChange);
+    window.addEventListener('hashchange', handleUrlChange);
+    return () => {
+      window.removeEventListener('popstate', handleUrlChange);
+      window.removeEventListener('hashchange', handleUrlChange);
+    };
+  }, []);
+
+  const handleTabChange = (newTab: string) => {
+    setActiveTab(newTab);
+    setIsMobileSidebarOpen(false);
+    try {
+      const path = newTab === 'bi_comercial' ? '/' : `/${newTab}`;
+      if (window.location.pathname !== path) {
+        window.history.pushState({ tab: newTab }, '', path);
+      }
+    } catch {
+      // Ignora restrições do iframe se existirem
+    }
+  };
 
   // Commercial Data (Fase 3: Leads)
   const { leads } = useCommercialData();
@@ -418,29 +470,68 @@ export default function App() {
   return (
     <div className="min-h-screen font-sans flex flex-col bg-[#030712] text-slate-100 selection:bg-blue-900 selection:text-blue-100">
       {['bi_comercial', 'leads', 'funil_vendas', 'vendas'].includes(activeTab) ? (
-        /* Layout Fullscreen Comercial com Sidebar Lateral */
-        <div className="flex-1 flex w-full min-h-screen bg-[#030712]">
+        /* Layout Fullscreen Comercial com Sidebar Lateral e Suporte Mobile Completo */
+        <div className="flex-1 flex flex-col lg:flex-row w-full min-h-screen bg-[#030712]">
+          {/* Barra Superior para Mobile */}
+          <div className="lg:hidden flex items-center justify-between px-4 py-3 bg-[#030712] border-b border-blue-950/80 sticky top-0 z-40">
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setIsMobileSidebarOpen(true)}
+                className="p-2 rounded-xl bg-blue-950/60 border border-blue-800/40 text-slate-300 hover:text-white transition-colors"
+                title="Abrir Menu Lateral"
+              >
+                <Menu className="w-5 h-5 text-cyan-400" />
+              </button>
+              <div className="flex items-center tracking-wider text-xl font-black">
+                <span className="text-white">RAX</span>
+                <span className="text-cyan-400">XER</span>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <span className="text-[11px] px-2.5 py-1 rounded-full bg-blue-950/80 border border-blue-800/60 text-cyan-300 font-semibold uppercase tracking-wide">
+                {activeTab === 'funil_vendas'
+                  ? 'Funil de Vendas'
+                  : activeTab === 'vendas'
+                  ? 'Vendas'
+                  : activeTab === 'leads'
+                  ? 'Leads'
+                  : 'Dashboard'}
+              </span>
+              <button
+                onClick={() => handleOpenAIChat()}
+                className="p-2 rounded-xl bg-blue-600/20 border border-blue-500/40 text-cyan-400 hover:text-white transition-colors"
+                title="RAXXER AI"
+              >
+                <Bot className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
           <Sidebar
             activeTab={activeTab}
-            setActiveTab={setActiveTab}
+            setActiveTab={handleTabChange}
             userName={profile.comoSerChamado || profile.nome || 'Wesley Alves'}
             onOpenAIChat={handleOpenAIChat}
+            isOpenMobile={isMobileSidebarOpen}
+            onCloseMobile={() => setIsMobileSidebarOpen(false)}
           />
-          <main className="flex-1 overflow-x-hidden bg-[#070C1A] p-4 lg:p-8">
+
+          <main className="flex-1 overflow-x-hidden bg-[#070C1A] p-3 sm:p-4 lg:p-8">
             {activeTab === 'bi_comercial' ? (
               <CommercialBIDashboard
                 userName={profile.comoSerChamado || profile.nome || 'Wesley'}
-                onNavigate={setActiveTab}
+                onNavigate={handleTabChange}
                 onOpenAIChat={handleOpenAIChat}
               />
             ) : activeTab === 'funil_vendas' ? (
               <SalesFunnelView
-                onNavigate={setActiveTab}
+                onNavigate={handleTabChange}
                 onOpenAIChat={handleOpenAIChat}
               />
             ) : activeTab === 'vendas' ? (
               <SalesView
-                onNavigate={setActiveTab}
+                onNavigate={handleTabChange}
                 onOpenAIChat={handleOpenAIChat}
               />
             ) : (

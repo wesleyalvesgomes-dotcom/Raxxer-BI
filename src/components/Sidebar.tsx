@@ -13,6 +13,7 @@ import {
   Settings,
   MoreHorizontal,
   ChevronRight,
+  X,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -20,6 +21,8 @@ interface SidebarProps {
   setActiveTab: (tab: string) => void;
   userName?: string;
   onOpenAIChat?: () => void;
+  isOpenMobile?: boolean;
+  onCloseMobile?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -27,6 +30,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   setActiveTab,
   userName = 'Wesley Alves',
   onOpenAIChat,
+  isOpenMobile = false,
+  onCloseMobile,
 }) => {
   const menuItems = [
     {
@@ -91,52 +96,84 @@ export const Sidebar: React.FC<SidebarProps> = ({
   ];
 
   return (
-    <aside className="w-60 shrink-0 bg-[#030712] border-r border-blue-950/70 flex flex-col justify-between min-h-screen select-none relative z-30 font-sans">
-      {/* Top Brand */}
-      <div className="p-5 pb-3">
+    <>
+      {/* Backdrop para mobile */}
+      {isOpenMobile && (
         <div
-          onClick={() => setActiveTab('bi_comercial')}
-          className="cursor-pointer group flex flex-col items-start"
-        >
-          <div className="flex items-center tracking-wider text-2xl font-black">
-            <span className="text-white">RAX</span>
-            <span className="text-cyan-400 drop-shadow-[0_0_10px_rgba(34,211,238,0.6)]">XER</span>
-          </div>
-          <span className="text-[9px] font-bold tracking-[0.22em] text-blue-400/90 uppercase mt-0.5">
-            SEU SEGUNDO CÉREBRO
-          </span>
-        </div>
+          onClick={onCloseMobile}
+          className="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 lg:hidden"
+        />
+      )}
 
-        {/* Navigation items */}
-        <nav className="mt-6 space-y-1">
-          {menuItems.map((item) => {
-            const Icon = item.icon;
-            const isSelected = activeTab === item.id;
+      <aside
+        className={`w-64 shrink-0 bg-[#030712] border-r border-blue-950/70 flex flex-col justify-between min-h-screen select-none z-50 font-sans transition-transform duration-300 ${
+          isOpenMobile
+            ? 'fixed inset-y-0 left-0 shadow-2xl translate-x-0'
+            : 'hidden lg:flex'
+        }`}
+      >
+        {/* Top Brand */}
+        <div className="p-5 pb-3">
+          <div className="flex items-center justify-between">
+            <div
+              onClick={() => {
+                setActiveTab('bi_comercial');
+                onCloseMobile?.();
+              }}
+              className="cursor-pointer group flex flex-col items-start"
+            >
+              <div className="flex items-center tracking-wider text-2xl font-black">
+                <span className="text-white">RAX</span>
+                <span className="text-cyan-400 drop-shadow-[0_0_10px_rgba(34,211,238,0.6)]">XER</span>
+              </div>
+              <span className="text-[9px] font-bold tracking-[0.22em] text-blue-400/90 uppercase mt-0.5">
+                SEU SEGUNDO CÉREBRO
+              </span>
+            </div>
 
-            return (
+            {/* Fechar no Mobile */}
+            {onCloseMobile && (
               <button
-                key={item.id}
-                id={`sidebar-nav-${item.id}`}
-                onClick={() => {
-                  if (item.isAI && onOpenAIChat) {
-                    onOpenAIChat();
-                  } else {
-                    setActiveTab(item.targetTab || item.id);
-                  }
-                }}
-                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-                  isSelected
-                    ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-[0_0_18px_rgba(37,99,235,0.45)]'
-                    : 'text-slate-400 hover:text-slate-100 hover:bg-slate-900/60'
-                }`}
+                onClick={onCloseMobile}
+                className="lg:hidden p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/80 transition-colors"
+                title="Fechar Menu"
               >
-                <Icon className={`w-4 h-4 shrink-0 ${isSelected ? 'text-white' : 'text-slate-400'}`} />
-                <span className="truncate">{item.label}</span>
+                <X className="w-5 h-5" />
               </button>
-            );
-          })}
-        </nav>
-      </div>
+            )}
+          </div>
+
+          {/* Navigation items */}
+          <nav className="mt-6 space-y-1">
+            {menuItems.map((item) => {
+              const Icon = item.icon;
+              const isSelected = activeTab === item.id;
+
+              return (
+                <button
+                  key={item.id}
+                  id={`sidebar-nav-${item.id}`}
+                  onClick={() => {
+                    if (item.isAI && onOpenAIChat) {
+                      onOpenAIChat();
+                    } else {
+                      setActiveTab(item.targetTab || item.id);
+                    }
+                    onCloseMobile?.();
+                  }}
+                  className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                    isSelected
+                      ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-[0_0_18px_rgba(37,99,235,0.45)]'
+                      : 'text-slate-400 hover:text-slate-100 hover:bg-slate-900/60'
+                  }`}
+                >
+                  <Icon className={`w-4 h-4 shrink-0 ${isSelected ? 'text-white' : 'text-slate-400'}`} />
+                  <span className="truncate">{item.label}</span>
+                </button>
+              );
+            })}
+          </nav>
+        </div>
 
       {/* Bottom Profile & Aesthetic Footer */}
       <div className="p-5 pt-0 space-y-4">
@@ -177,5 +214,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
       </div>
     </aside>
+    </>
   );
 };

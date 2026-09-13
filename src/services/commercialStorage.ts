@@ -17,6 +17,10 @@ import {
   SaleStatus,
   VisitStatus,
 } from '../types/commercial';
+import {
+  INITIAL_COMMERCIAL_LEADS,
+  INITIAL_COMMERCIAL_GOALS,
+} from '../utils/initialCommercialData';
 
 // Chaves exclusivas e isoladas no localStorage para o BI Comercial
 export const COMMERCIAL_STORAGE_KEYS = {
@@ -159,7 +163,11 @@ function normalizeLead(raw: any): CommercialLeadItem {
 // ==========================================
 export function getStoredLeads(): CommercialLeadItem[] {
   const rawList = readFromStorage<any[]>(COMMERCIAL_STORAGE_KEYS.LEADS, []);
-  if (!Array.isArray(rawList)) return [];
+  if (!Array.isArray(rawList) || rawList.length === 0) {
+    // Se vazio no primeiro acesso (ou novo ambiente como Cloudflare), inicializar com os dados modelo oficiais
+    writeToStorage(COMMERCIAL_STORAGE_KEYS.LEADS, INITIAL_COMMERCIAL_LEADS);
+    return INITIAL_COMMERCIAL_LEADS.map(normalizeLead);
+  }
   return rawList.map(normalizeLead);
 }
 
@@ -701,7 +709,12 @@ export function updateStoredSaleStatus(id: string, status: SaleStatus): Commerci
 }
 
 export function getStoredCommercialGoals(): CommercialGoalItem[] {
-  return readFromStorage<CommercialGoalItem[]>(COMMERCIAL_STORAGE_KEYS.GOALS, []);
+  const rawList = readFromStorage<CommercialGoalItem[]>(COMMERCIAL_STORAGE_KEYS.GOALS, []);
+  if (!Array.isArray(rawList) || rawList.length === 0) {
+    writeToStorage(COMMERCIAL_STORAGE_KEYS.GOALS, INITIAL_COMMERCIAL_GOALS);
+    return INITIAL_COMMERCIAL_GOALS;
+  }
+  return rawList;
 }
 
 export function saveStoredCommercialGoals(goals: CommercialGoalItem[]): void {

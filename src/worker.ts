@@ -187,9 +187,18 @@ export default {
       }
     }
 
-    // Servir Frontend SPA estático usando Cloudflare Worker Assets
+    // Servir Frontend SPA estático usando Cloudflare Worker Assets com fallback para rotas SPA
     if (env.ASSETS) {
-      return env.ASSETS.fetch(request);
+      const response = await env.ASSETS.fetch(request);
+      // Se a rota não foi encontrada diretamente e é uma requisição GET para rota SPA (sem extensão de arquivo)
+      if (response.status === 404 && request.method === 'GET') {
+        const url = new URL(request.url);
+        if (!url.pathname.includes('.')) {
+          const indexRequest = new Request(new URL('/', request.url).toString(), request);
+          return env.ASSETS.fetch(indexRequest);
+        }
+      }
+      return response;
     }
 
     return new Response('Not found', { status: 404 });
