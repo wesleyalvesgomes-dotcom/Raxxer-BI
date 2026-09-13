@@ -50,13 +50,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
       id: 'funil_vendas',
       label: 'Funil de Vendas',
       icon: Filter,
-      targetTab: 'bi_comercial',
     },
     {
       id: 'vendas',
       label: 'Vendas',
       icon: DollarSign,
-      targetTab: 'bi_comercial',
     },
     {
       id: 'meu_dia',
@@ -113,13 +111,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <nav className="mt-6 space-y-1">
           {menuItems.map((item) => {
             const Icon = item.icon;
-            const isSelected =
-              activeTab === item.id ||
-              (item.targetTab && activeTab === item.targetTab && item.id === 'bi_comercial');
+            const isSelected = activeTab === item.id;
 
             return (
               <button
                 key={item.id}
+                id={`sidebar-nav-${item.id}`}
                 onClick={() => {
                   if (item.isAI && onOpenAIChat) {
                     onOpenAIChat();

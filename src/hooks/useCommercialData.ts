@@ -5,7 +5,9 @@ import {
   CommercialFunnelStage,
   CommercialGoalItem,
   CommercialInteractionItem,
+  CommercialLeadHistoryEvent,
   CommercialLeadItem,
+  CommercialLeadStatus,
   CommercialProposalItem,
   CommercialSaleItem,
   CommercialVisitItem,
@@ -18,8 +20,12 @@ import {
   getCommercialDataSnapshot,
   addStoredLead,
   updateStoredLead,
+  updateStoredLeadStatus,
   updateStoredLeadStage,
   deleteStoredLead,
+  getLeadHistory,
+  addStoredLeadHistoryEvent,
+  calculateCommercialBalance,
   addStoredInteraction,
   addStoredVisit,
   updateStoredVisitStatus,
@@ -58,6 +64,7 @@ export function useCommercialData() {
   return {
     // Dados reativos
     leads: snapshot.leads,
+    history: snapshot.history,
     interactions: snapshot.interactions,
     visits: snapshot.visits,
     proposals: snapshot.proposals,
@@ -83,6 +90,23 @@ export function useCommercialData() {
       },
       [refresh]
     ),
+    updateLeadStatus: useCallback(
+      (
+        id: string,
+        novoStatus: CommercialLeadStatus,
+        detalhes?: {
+          valorAprovado?: number;
+          vgv?: number;
+          motivoDescarteReprovacao?: string;
+          observacao?: string;
+        }
+      ) => {
+        const item = updateStoredLeadStatus(id, novoStatus, detalhes);
+        refresh();
+        return item;
+      },
+      [refresh]
+    ),
     updateLeadStage: useCallback(
       (id: string, etapa: CommercialFunnelStage, motivoPerda?: string) => {
         const item = updateStoredLeadStage(id, etapa, motivoPerda);
@@ -98,6 +122,27 @@ export function useCommercialData() {
         return ok;
       },
       [refresh]
+    ),
+
+    // Histórico de Eventos
+    getLeadHistoryEvents: useCallback((leadId: string) => {
+      return getLeadHistory(leadId);
+    }, []),
+    addLeadHistoryEvent: useCallback(
+      (event: Omit<CommercialLeadHistoryEvent, 'id' | 'createdAt'> & { createdAt?: string }) => {
+        const item = addStoredLeadHistoryEvent(event);
+        refresh();
+        return item;
+      },
+      [refresh]
+    ),
+
+    // Balanços
+    getBalance: useCallback(
+      (periodo: 'diario' | 'semanal' | 'mensal', baseDate: Date = new Date()) => {
+        return calculateCommercialBalance(snapshot.leads, periodo, baseDate);
+      },
+      [snapshot.leads]
     ),
 
     // Métodos Interações
@@ -120,8 +165,8 @@ export function useCommercialData() {
       [refresh]
     ),
     updateVisitStatus: useCallback(
-      (id: string, status: VisitStatus, details?: { feedback?: string; motivoCancelamento?: string }) => {
-        const item = updateStoredVisitStatus(id, status, details);
+      (id: string, status: VisitStatus) => {
+        const item = updateStoredVisitStatus(id, status);
         refresh();
         return item;
       },
@@ -138,8 +183,8 @@ export function useCommercialData() {
       [refresh]
     ),
     updateProposalStatus: useCallback(
-      (id: string, status: ProposalStatus, dataResposta?: string) => {
-        const item = updateStoredProposalStatus(id, status, dataResposta);
+      (id: string, status: ProposalStatus) => {
+        const item = updateStoredProposalStatus(id, status);
         refresh();
         return item;
       },

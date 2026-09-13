@@ -1,101 +1,90 @@
-// Tipos e Modelos do BI Comercial RAXXER (Fase 2)
+// Tipos e Modelos do Controle Comercial e BI do RAXXER
+// Escopo focado: Gestão de Leads, Balanços (Diário, Semanal, Mensal), Análises e Vendas/VGV
 
-export type CommercialFunnelStage =
-  | 'novo_lead'
-  | 'primeira_tratativa'
-  | 'segunda_tratativa'
-  | 'terceira_tratativa'
-  | 'atendimento'
-  | 'documentacao'
-  | 'visita_agendada'
-  | 'proposta'
-  | 'venda'
-  | 'perdido';
+export type CommercialLeadStatus =
+  | 'atendimentos'
+  | 'descartados'
+  | 'nao_atenderam'
+  | 'em_analise'
+  | 'aprovados'
+  | 'reprovados'
+  | 'vendidos';
 
-export interface CommercialFunnelStageConfig {
-  id: CommercialFunnelStage;
-  label: string;
+// Alias para compatibilidade com versões anteriores
+export type CommercialFunnelStage = CommercialLeadStatus;
+
+export interface CommercialStageConfig {
+  id: CommercialLeadStatus;
+  label: string; // Exatamente como requerido na interface
   ordem: number;
   descricao: string;
   cor: string;
+  badgeClass: string;
 }
 
-export const COMMERCIAL_FUNNEL_STAGES: readonly CommercialFunnelStageConfig[] = [
+// 7 Etapas/Status Oficiais do RAXXER
+export const COMMERCIAL_STAGES: readonly CommercialStageConfig[] = [
   {
-    id: 'novo_lead',
-    label: 'Novo lead',
+    id: 'atendimentos',
+    label: 'Atendimentos',
     ordem: 1,
-    descricao: 'Lead recém-captado ou cadastrado, ainda sem contato inicial.',
+    descricao: 'Leads que estão sendo acompanhados ou atendidos.',
     cor: '#3B82F6', // Blue
+    badgeClass: 'bg-blue-950/70 text-blue-300 border-blue-500/40',
   },
   {
-    id: 'primeira_tratativa',
-    label: 'Primeira tratativa',
+    id: 'descartados',
+    label: 'Descartados',
     ordem: 2,
-    descricao: 'Primeira tentativa ou contato inicial de abordagem.',
-    cor: '#6366F1', // Indigo
+    descricao: 'Leads que foram descartados.',
+    cor: '#64748B', // Slate
+    badgeClass: 'bg-slate-900 text-slate-300 border-slate-700/50',
   },
   {
-    id: 'segunda_tratativa',
-    label: 'Segunda tratativa',
+    id: 'nao_atenderam',
+    label: 'Não atenderam',
     ordem: 3,
-    descricao: 'Follow-up ou segundo contato para avanço da conversa.',
-    cor: '#8B5CF6', // Purple
+    descricao: 'Leads que ainda não atenderam ou não respondem.',
+    cor: '#818CF8', // Indigo
+    badgeClass: 'bg-indigo-950/70 text-indigo-300 border-indigo-500/40',
   },
   {
-    id: 'terceira_tratativa',
-    label: 'Terceira tratativa',
+    id: 'em_analise',
+    label: 'Em análise',
     ordem: 4,
-    descricao: 'Terceiro contato de insistência ou reativação do lead.',
-    cor: '#A855F7', // Fuchsia
-  },
-  {
-    id: 'atendimento',
-    label: 'Atendimento',
-    ordem: 5,
-    descricao: 'Lead em atendimento ativo e qualificação de interesse.',
-    cor: '#EC4899', // Pink
-  },
-  {
-    id: 'documentacao',
-    label: 'Documentação',
-    ordem: 6,
-    descricao: 'Coleta, análise e validação de documentos cadastrais.',
+    descricao: 'Leads cuja documentação/cadastro entrou em análise de crédito ou processo.',
     cor: '#F59E0B', // Amber
+    badgeClass: 'bg-amber-950/70 text-amber-300 border-amber-500/40',
   },
   {
-    id: 'visita_agendada',
-    label: 'Visita agendada',
-    ordem: 7,
-    descricao: 'Visita técnica, presencial ou demonstração agendada.',
-    cor: '#EAB308', // Yellow
-  },
-  {
-    id: 'proposta',
-    label: 'Proposta',
-    ordem: 8,
-    descricao: 'Proposta formal enviada em negociação de valores e condições.',
+    id: 'aprovados',
+    label: 'Aprovados',
+    ordem: 5,
+    descricao: 'Leads aprovados pela análise de crédito/financiamento.',
     cor: '#10B981', // Emerald
+    badgeClass: 'bg-emerald-950/70 text-emerald-300 border-emerald-500/40',
   },
   {
-    id: 'venda',
-    label: 'Venda',
-    ordem: 9,
-    descricao: 'Negócio fechado e venda convertida com sucesso.',
-    cor: '#059669', // Dark Emerald
-  },
-  {
-    id: 'perdido',
-    label: 'Perdido',
-    ordem: 10,
-    descricao: 'Negociação não concretizada ou lead desqualificado/desistente.',
+    id: 'reprovados',
+    label: 'Reprovados',
+    ordem: 6,
+    descricao: 'Leads reprovados na análise ou sem enquadramento financeiro.',
     cor: '#EF4444', // Red
+    badgeClass: 'bg-rose-950/70 text-rose-300 border-rose-500/40',
+  },
+  {
+    id: 'vendidos',
+    label: 'Vendidos',
+    ordem: 7,
+    descricao: 'Vendas concretizadas com registro de VGV.',
+    cor: '#06B6D4', // Cyan
+    badgeClass: 'bg-cyan-950/70 text-cyan-300 border-cyan-500/40',
   },
 ] as const;
 
-export type LeadTemperature = 'frio' | 'morno' | 'quente';
-
-export type LeadStatus = 'ativo' | 'ganho' | 'perdido' | 'pausado';
+// Alias para evitar quebras em código legado
+export const COMMERCIAL_FUNNEL_STAGES = COMMERCIAL_STAGES;
+export type CommercialFunnelStageConfig = CommercialStageConfig;
 
 export type LeadChannel =
   | 'whatsapp'
@@ -117,76 +106,121 @@ export interface CommercialLeadItem {
   empreendimento?: string;
   renda?: number | string;
   cidade?: string;
-  etapa: CommercialFunnelStage;
-  temperatura?: LeadTemperature;
-  status?: LeadStatus;
-  valorEstimado?: number;
-  interesse?: string;
-  responsavel?: string;
-  motivoPerda?: string;
-  tags?: string[];
-  observacoes?: string;
+  status: CommercialLeadStatus;
+  etapa?: CommercialLeadStatus; // mantido sincronizado para compatibilidade
+  
+  // Datas e Controle
+  dataCadastro?: string; // ISO string ou YYYY-MM-DD
   dataCriacao: string; // ISO string
   dataAtualizacao: string; // ISO string
-  dataUltimoContato?: string; // ISO string
+  dataUltimoContato?: string; // ISO string ou YYYY-MM-DD
   proximoContato?: string; // ISO string ou YYYY-MM-DD
+  observacoes?: string;
+
+  // Resultado Comercial Específico
+  dataAnalise?: string; // Data em que entrou em análise
+  dataAprovacao?: string; // Data da aprovação
+  dataReprovacao?: string; // Data da reprovação
+  dataVenda?: string; // Data da venda
+  valorAprovado?: number; // Valor aprovado
+  vgv?: number; // VGV vendido
+  motivoDescarteReprovacao?: string; // Motivo do descarte ou reprovação
+  
+  // Flag para assegurar contabilização única de venda sem duplicação em edições
+  vendaContabilizada?: boolean;
+
+  // Campos legados mapeados de forma segura
+  valorEstimado?: number;
+  motivoPerda?: string;
+  temperatura?: string;
+  responsavel?: string;
+  tags?: string[];
+  interesse?: string;
 }
 
-export type InteractionType =
-  | 'whatsapp'
-  | 'ligacao'
-  | 'reuniao'
-  | 'email'
-  | 'visita'
-  | 'mensagem'
-  | 'outro';
+// Histórico de Eventos Importantes do Lead
+export type LeadHistoryEventType =
+  | 'lead_cadastrado'
+  | 'status_alterado'
+  | 'entrou_analise'
+  | 'aprovado'
+  | 'reprovado'
+  | 'vendido'
+  | 'descartado'
+  | 'observacao_adicionada';
 
+export interface CommercialLeadHistoryEvent {
+  id: string;
+  leadId: string;
+  type: LeadHistoryEventType;
+  createdAt: string; // ISO string
+  statusAnterior?: CommercialLeadStatus | string;
+  novoStatus?: CommercialLeadStatus | string;
+  observacao?: string;
+  valor?: number; // Valor aprovado ou VGV
+}
+
+// Balanços Comercial (Diário, Semanal e Mensal)
+export interface CommercialBalanceMetrics {
+  periodo: 'diario' | 'semanal' | 'mensal';
+  dataInicio: string;
+  dataFim: string;
+  
+  // Métricas principais
+  cadastrados: number;
+  atendimentos: number;
+  naoAtenderam: number;
+  descartados: number;
+  analises: number;
+  aprovados: number;
+  reprovados: number;
+  vendidos: number;
+  vgv: number;
+  
+  // Conversões
+  taxaConversaoAnalise: number; // (analises / cadastrados) * 100
+  taxaConversaoVenda: number; // (vendidos / cadastrados) * 100
+  taxaConversaoGeral: number; // (vendidos / totalLeads) * 100
+}
+
+// Tipos legados para não quebrar compatibilidade
+export type InteractionType = 'whatsapp' | 'ligacao' | 'reuniao' | 'email' | 'visita' | 'mensagem' | 'outro';
 export interface CommercialInteractionItem {
   id: string;
   leadId: string;
   tipo: InteractionType;
   descricao: string;
-  data: string; // ISO string
+  data: string;
   proximaAcao?: string;
-  dataProximaAcao?: string; // ISO string ou YYYY-MM-DD
+  dataProximaAcao?: string;
   responsavel?: string;
   resultado?: string;
   dataCriacao: string;
 }
 
 export type VisitStatus = 'agendada' | 'realizada' | 'cancelada' | 'reagendada';
-
 export interface CommercialVisitItem {
   id: string;
   leadId: string;
-  dataAgendada: string; // YYYY-MM-DD
-  horario?: string; // HH:mm
+  dataAgendada: string;
+  horario?: string;
   local?: string;
   status: VisitStatus;
   feedback?: string;
   responsavel?: string;
   dataCriacao: string;
-  dataRealizacao?: string;
-  dataCancelamento?: string;
-  motivoCancelamento?: string;
 }
 
-export type ProposalStatus =
-  | 'em_analise'
-  | 'enviada'
-  | 'aceita'
-  | 'recusada'
-  | 'expirada';
-
+export type ProposalStatus = 'em_analise' | 'enviada' | 'aceita' | 'recusada' | 'expirada';
 export interface CommercialProposalItem {
   id: string;
   leadId: string;
   numeroIdentificador?: string;
   valor: number;
   condicoes?: string;
-  validade?: string; // YYYY-MM-DD
+  validade?: string;
   status: ProposalStatus;
-  dataEnvio: string; // ISO string
+  dataEnvio: string;
   dataResposta?: string;
   arquivoUrl?: string;
   observacoes?: string;
@@ -194,7 +228,6 @@ export interface CommercialProposalItem {
 }
 
 export type SaleStatus = 'fechada' | 'faturada' | 'cancelada' | 'em_contrato';
-
 export interface CommercialSaleItem {
   id: string;
   leadId: string;
@@ -202,7 +235,7 @@ export interface CommercialSaleItem {
   valorTotal: number;
   comissaoValor?: number;
   comissaoPercentual?: number;
-  dataVenda: string; // YYYY-MM-DD
+  dataVenda: string;
   status: SaleStatus;
   produtoOuServico: string;
   compradorNome: string;
@@ -214,12 +247,11 @@ export interface CommercialSaleItem {
 }
 
 export type CommercialGoalPeriod = 'mensal' | 'trimestral' | 'anual' | 'semanal';
-
 export interface CommercialGoalItem {
   id: string;
   titulo: string;
   periodo: CommercialGoalPeriod;
-  mesReferencia?: string; // ex: '2026-09'
+  mesReferencia?: string;
   ano: number;
   metaVendasValor: number;
   metaVendasQuantidade: number;
@@ -239,6 +271,7 @@ export interface CommercialGoalItem {
 // Snapshot completo do banco comercial local
 export interface CommercialDataSnapshot {
   leads: CommercialLeadItem[];
+  history: CommercialLeadHistoryEvent[];
   interactions: CommercialInteractionItem[];
   visits: CommercialVisitItem[];
   proposals: CommercialProposalItem[];

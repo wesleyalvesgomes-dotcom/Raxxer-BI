@@ -5,6 +5,8 @@ import {
   CalendarCheck,
   Target,
   Users,
+  Filter,
+  DollarSign,
   BookMarked,
   BarChart3,
   TrendingUp,
@@ -151,6 +153,32 @@ export const Header: React.FC<HeaderProps> = ({
                 {leadsCount}
               </span>
             )}
+          </button>
+
+          <button
+            id="nav-tab-funil-vendas"
+            onClick={() => setActiveTab('funil_vendas')}
+            className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
+              activeTab === 'funil_vendas'
+                ? 'bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 text-white shadow-[0_0_18px_rgba(37,99,235,0.45)]'
+                : 'text-slate-400 hover:text-white hover:bg-slate-900/60'
+            }`}
+          >
+            <Filter className="w-4 h-4" />
+            Funil de Vendas
+          </button>
+
+          <button
+            id="nav-tab-vendas"
+            onClick={() => setActiveTab('vendas')}
+            className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
+              activeTab === 'vendas'
+                ? 'bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600 text-white shadow-[0_0_18px_rgba(6,182,212,0.45)]'
+                : 'text-slate-400 hover:text-white hover:bg-slate-900/60'
+            }`}
+          >
+            <DollarSign className="w-4 h-4" />
+            Vendas
           </button>
 
           <button

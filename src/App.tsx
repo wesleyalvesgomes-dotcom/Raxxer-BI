@@ -10,6 +10,8 @@ import { InterviewWizard } from './components/InterviewWizard';
 import { AIChatDrawer } from './components/AIChatDrawer';
 import { QuickMemoryModal } from './components/QuickMemoryModal';
 import { LeadsView } from './components/LeadsView';
+import { SalesFunnelView } from './components/SalesFunnelView';
+import { SalesView } from './components/SalesView';
 import { CommercialBIDashboard } from './components/CommercialBIDashboard';
 import { Sidebar } from './components/Sidebar';
 import { useCommercialData } from './hooks/useCommercialData';
@@ -415,8 +417,8 @@ export default function App() {
 
   return (
     <div className="min-h-screen font-sans flex flex-col bg-[#030712] text-slate-100 selection:bg-blue-900 selection:text-blue-100">
-      {activeTab === 'bi_comercial' ? (
-        /* Layout Fullscreen com Sidebar Lateral idêntico à imagem de referência */
+      {['bi_comercial', 'leads', 'funil_vendas', 'vendas'].includes(activeTab) ? (
+        /* Layout Fullscreen Comercial com Sidebar Lateral */
         <div className="flex-1 flex w-full min-h-screen bg-[#030712]">
           <Sidebar
             activeTab={activeTab}
@@ -424,12 +426,26 @@ export default function App() {
             userName={profile.comoSerChamado || profile.nome || 'Wesley Alves'}
             onOpenAIChat={handleOpenAIChat}
           />
-          <main className="flex-1 overflow-x-hidden bg-[#070C1A]">
-            <CommercialBIDashboard
-              userName={profile.comoSerChamado || profile.nome || 'Wesley'}
-              onNavigate={setActiveTab}
-              onOpenAIChat={handleOpenAIChat}
-            />
+          <main className="flex-1 overflow-x-hidden bg-[#070C1A] p-4 lg:p-8">
+            {activeTab === 'bi_comercial' ? (
+              <CommercialBIDashboard
+                userName={profile.comoSerChamado || profile.nome || 'Wesley'}
+                onNavigate={setActiveTab}
+                onOpenAIChat={handleOpenAIChat}
+              />
+            ) : activeTab === 'funil_vendas' ? (
+              <SalesFunnelView
+                onNavigate={setActiveTab}
+                onOpenAIChat={handleOpenAIChat}
+              />
+            ) : activeTab === 'vendas' ? (
+              <SalesView
+                onNavigate={setActiveTab}
+                onOpenAIChat={handleOpenAIChat}
+              />
+            ) : (
+              <LeadsView />
+            )}
           </main>
         </div>
       ) : (
@@ -478,6 +494,16 @@ export default function App() {
               />
             ) : activeTab === 'leads' ? (
               <LeadsView />
+            ) : activeTab === 'funil_vendas' ? (
+              <SalesFunnelView
+                onNavigate={setActiveTab}
+                onOpenAIChat={handleOpenAIChat}
+              />
+            ) : activeTab === 'vendas' ? (
+              <SalesView
+                onNavigate={setActiveTab}
+                onOpenAIChat={handleOpenAIChat}
+              />
             ) : activeTab === 'memoria_viva' ? (
               <MemoryBrainView
                 memories={memories}
