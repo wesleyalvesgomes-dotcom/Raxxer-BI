@@ -42,7 +42,7 @@ import { useCommercialData } from '../hooks/useCommercialData';
 import { useCurrentDateTime } from '../hooks/useCurrentDateTime';
 import { COMMERCIAL_STAGES, CommercialLeadStatus } from '../types/commercial';
 import heroMountainArt from '../assets/person-mountain.jpg';
-import aiHumanoidArt from '../assets/ai-cyborg-face.jpg';
+import robotTechArt from '../assets/tech-robot.jpg';
 
 interface CommercialBIDashboardProps {
   userName?: string;
@@ -1565,18 +1565,18 @@ export const CommercialBIDashboard: React.FC<CommercialBIDashboardProps> = ({
           </div>
         </div>
 
-        {/* COLUNA 3: CARD INSTITUCIONAL / BRANDING COM ARTE IA HUMANOIDE (4 COLUNAS) */}
+        {/* COLUNA 3: CARD INSTITUCIONAL / BRANDING COM ROBÔ TECNOLÓGICO (4 COLUNAS) */}
         <div className="lg:col-span-4 rounded-2xl border border-blue-500/40 shadow-[0_0_30px_rgba(37,99,235,0.25)] relative overflow-hidden bg-[#060E24] flex flex-col justify-between min-h-[260px]">
-          {/* Arte da Inteligência Artificial Humanoide posicionada com fade suave */}
+          {/* Arte do Robô Tecnológico posicionada com fade suave */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
             <img
-              src={aiHumanoidArt}
-              alt="Inteligência Artificial RAXXER"
-              className="w-full h-full object-cover object-[80%_center] md:object-right opacity-45 mix-blend-screen scale-105 transition-transform duration-700"
+              src={robotTechArt}
+              alt="Robô Tecnológico RAXXER"
+              className="w-full h-full object-cover object-[75%_center] md:object-right opacity-55 mix-blend-screen scale-105 transition-transform duration-700"
               referrerPolicy="no-referrer"
             />
             {/* Gradiente escuro para garantir legibilidade perfeita do texto institucional */}
-            <div className="absolute inset-0 bg-gradient-to-r from-[#060E24] via-[#060E24]/90 via-55% to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#060E24] via-[#060E24]/85 via-50% to-transparent" />
             <div className="absolute inset-0 bg-gradient-to-t from-[#060E24] via-transparent to-[#060E24]/30" />
             {/* Brilho e atmosfera neon */}
             <div className="absolute -top-10 -right-10 w-48 h-48 bg-cyan-500/20 rounded-full blur-2xl" />
